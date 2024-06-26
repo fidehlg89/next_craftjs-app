@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +17,57 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <head>
+        <Script async src="https://www.googletagmanager.com/gtag/js?id=" />
+        <Script
+          id="google-tag-manager"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'AW-16524117211');
+              gtag('config', 'AW-16524117211/RaBdCICVgr0ZENuJqMc9', {
+                'phone_conversion_number': '(727) 238-3241'
+              });
+            `,
+          }}
+        />
+      </head>
+      <body className={inter.className}>
+        {children}
+        <Script
+          id="custom-gtag-events"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+          window.addEventListener('click', function(e) {
+            if (e.target.closest('[href*="tel:"]')) {
+              gtag('event', 'conversion', {
+                'send_to': 'AW-16524117211/H9XZCLCtgr0ZENuJqMc9'
+              });
+            }
+            if (e.target.closest('[href*="google.com/maps/"]')) {
+              gtag('event', 'conversion', {
+                'send_to': 'AW-16524117211/67eACK32ir0ZENuJqMc9'
+              });
+            }
+            if (e.target.closest('button') && e.target.closest('button').innerText.includes("SEND")) {
+              var setTimer = setInterval(function() {
+                if (document.querySelector('.Toastify__toast--success')) {
+                  gtag('event', 'conversion', {
+                    'send_to': 'AW-16524117211/imV8CN7khL0ZENuJqMc9'
+                  });
+                  clearInterval(setTimer);
+                }
+              }, 1000);
+            }
+          }, true);
+        `,
+          }}
+        />
+      </body>
     </html>
   );
 }
